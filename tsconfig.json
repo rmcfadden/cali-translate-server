@@ -3,14 +3,13 @@
   "compilerOptions": {
     // File Layout
        "rootDir": "./src",
-       "outDir": "./build",
+       "outDir": "dist",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
+    "module": "preserve",
     "target": "esnext",
-    "types": [],
-    // For nodejs:
+    "types": ["jest", "node"],
     // "lib": ["esnext"],
     // "types": ["node"],
     // and npm install -D @types/node
@@ -19,7 +18,8 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "moduleResolution": "nodenext",
+    "moduleResolution": "Bundler",
+    "esModuleInterop": true,
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
@@ -36,10 +36,11 @@
     // Recommended Options
     "strict": true,
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+
   }
 }
