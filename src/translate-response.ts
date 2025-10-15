@@ -1,5 +1,7 @@
+import { TranslateResponseAlternative } from "./translate-response-alternative";
 export type TranslateResponse = {
     to: string;
-    text: string;
+    translation: string;
+    alternatives?: TranslateResponseAlternative[];
     service: string | undefined;
 };
