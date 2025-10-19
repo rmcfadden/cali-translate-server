@@ -1,7 +1,6 @@
 import { TranslateResponse } from "../translate-response";
 import Translator from "../translator";
 import { OllamaTranslateResponse } from "./ollama-translate-response";
-
 import {Ollama} from 'ollama';
 
 

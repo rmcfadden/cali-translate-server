@@ -1,0 +1,11 @@
+FROM mysql:latest
+
+# Set environment variables for MySQL root password and database name
+ENV MYSQL_ROOT_PASSWORD=rootpassword
+ENV MYSQL_DATABASE=translate
+ENV MYSQL_USER=appuser
+ENV MYSQL_PASSWORD=apppassword
+
+EXPOSE 3306
+
+COPY ./src/db/create.sql /docker-entrypoint-initdb.d/
