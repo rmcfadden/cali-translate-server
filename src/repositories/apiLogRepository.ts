@@ -9,12 +9,12 @@ export const ApiLogRepository = {
       userId ?? null,
       ip,
     ]);
-    const rows = await query<{ id: number }[]>('select id from api_logs where api_key_id = ? order by id desc limit 1', [apiKeyId]);
+    const rows = await query<ApiLog>('select id from api_logs where api_key_id = ? order by id desc limit 1', [apiKeyId]);
     return rows[0].id;
   },
 
   // return human-readable IP (use INET6_NTOA())
-  async listByApiKey(apiKeyId: number): Promise<(ApiLog & { ip: string })[]> {
-    return query<(ApiLog & { ip: string })[]>('select id, api_key_id, user_id, inet6_ntoa(ip_address) as ip, created from api_logs where api_key_id = ? order by id', [apiKeyId]);
+  async listByApiKey(apiKeyId: number): Promise<ApiLog[]> {
+    return query<ApiLog>('select id, api_key_id, user_id, inet6_ntoa(ip_address) as ip, created from api_logs where api_key_id = ? order by id', [apiKeyId]);
   },
 };

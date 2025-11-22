@@ -13,15 +13,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/commander": "^2.12.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "mysql2": "^3.15.3",
     "ollama": "^0.5.18"
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
+    "@inquirer/prompts": "^8.0.1",
     "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.3.1",
+    "@types/node": "^24.10.1",
+    "commander": "^14.0.2",
     "eslint": "^9.37.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.4.0",

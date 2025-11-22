@@ -1,10 +1,10 @@
 import { query } from './db';
 import type { User } from '../models/user';
 
-export const UserRepository = {
+export const UsersRepository = {
   async create(username: string, passwordHash: string): Promise<number> {
     await query('insert into users (username, password_hash) values (?, ?)', [username, passwordHash]);
-    const rows = await query<{ id: number }[]>('select id from users where username = ? limit 1', [username]);
+    const rows = await query<User>('select id from users where username = ? limit 1', [username]);
     return rows[0].id;
   },
 

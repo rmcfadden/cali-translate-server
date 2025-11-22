@@ -1,10 +1,10 @@
 import { query } from './db';
-import type { ApiKey } from '../models/apiKey';
+import type { ApiKey } from '../models/api-key';
 
 export const ApiKeyRepository = {
   async create(name: string, secret: string): Promise<number> {
     await query('insert into api_keys (name, secret) values (?, ?)', [name, secret]);
-    const rows = await query<{ id: number }[]>('select id from api_keys where name = ? limit 1', [name]);
+    const rows = await query<ApiKey>('select id from api_keys where name = ? limit 1', [name]);
     return rows[0].id;
   },
 
