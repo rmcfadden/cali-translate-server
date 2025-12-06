@@ -6,10 +6,9 @@ import {Ollama} from 'ollama';
 
 export default class OllamaTranslator extends Translator {
     async translate(text: string, to: string): Promise<TranslateResponse> {
-          console.log('starting translation...');
         const ollama = new Ollama({ host: 'http://127.0.0.1:11434' });
         const message = `Translate: "${text}" to ${to}.`;
-        console.log('running query:',message);
+        console.log('translating:',message);
         const response = await ollama.chat({
             model: 'wizardlm2',//'gemma3:4b',
             messages: [{ role: 'user', content: message }],
