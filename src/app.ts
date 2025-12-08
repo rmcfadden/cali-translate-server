@@ -16,6 +16,7 @@ const app: Application = express();
 app.use(async (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers['x-api-key']?.toString() ?? '';
   const userId = await authentication.authenticate({type: 'api-key', token } as Credential);
+  req.user_id = userId;
 
   console.log('userId:', userId)
 
