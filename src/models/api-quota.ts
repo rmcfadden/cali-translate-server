@@ -1,10 +1,9 @@
 export type ApiQuota = {
   id: number;
-  user_id: number;
-  project_id: number;
-  quota_limit: number;
-  quota_used: number;
-  reset_at: Date;
+  api_key_id: number;
+  interval: number;
+  interval_unit: string;
+  is_enabled: boolean;
   updated: Date;
   created: Date;
 };

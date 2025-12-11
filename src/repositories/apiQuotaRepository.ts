@@ -3,14 +3,14 @@ import type { ApiQuota } from '../models/api-quota';
 
 export const ApiQuotaRepository = {
   async create(apiQuota: Partial<ApiQuota>): Promise<number> {
-    const { user_id, project_id, quota_limit, quota_used } = apiQuota;
+    const { api_key_id, interval, interval_unit } = apiQuota;
     await query(
-      'insert into api_quotas (user_id, project_id, quota_limit, quota_used) values (?, ?, ?, ?)',
-      [user_id, project_id, quota_limit, quota_used]
+      'insert into api_quotas (api_key_id, max, interval_unit) values (?, ?, ?)',
+      [api_key_id, interval, interval_unit]
     );
     const rows = await query<ApiQuota>(
-      'select id from api_quotas where user_id = ? and project_id = ? limit 1',
-      [user_id, project_id]
+      'select id from api_quotas where api_key_id = ? limit 1',
+      [api_key_id]
     );
     return rows[0].id;
   },
@@ -20,28 +20,28 @@ export const ApiQuotaRepository = {
     return rows[0] ?? null;
   },
 
-  async findByUserAndProject(user_id: number, project_id: number): Promise<ApiQuota | null> {
+  async findByApiKeyId(api_key_id: number): Promise<ApiQuota[]> {
     const rows = await query<ApiQuota>(
-      'select * from api_quotas where user_id = ? and project_id = ? limit 1',
-      [user_id, project_id]
+      'select * from api_quotas where api_key_id = ? limit 1',
+      [api_key_id]
     );
-    return rows[0] ?? null;
+    return rows;
   },
 
-  async listByUser(user_id: number): Promise<ApiQuota[]> {
-    return query<ApiQuota>('select * from api_quotas where user_id = ? order by id', [user_id]);
+  async listByApiKey(api_key_id: number): Promise<ApiQuota[]> {
+    return query<ApiQuota>('select * from api_quotas where api_key_id = ? order by id', [api_key_id]);
   },
 
-  async updateQuotaUsed(id: number, quota_used: number): Promise<void> {
-    await query('update api_quotas set quota_used = ? where id = ?', [quota_used, id]);
+  async update(id: number, max: number, interval_unit: number): Promise<void> {
+    await query('update api_quotas set max = ?, interval_unit = ? where id = ?', [max, interval_unit, id]);
   },
 
-  async incrementQuotaUsed(id: number, increment: number = 1): Promise<void> {
-    await query('update api_quotas set quota_used = quota_used + ? where id = ?', [increment, id]);
+  async disable(id: number): Promise<void> {
+    await query('update api_quotas set is_enabled = false where id = ?', [id]);
   },
 
-  async resetQuota(id: number, reset_at: Date): Promise<void> {
-    await query('update api_quotas set quota_used = 0, reset_at = ? where id = ?', [reset_at, id]);
+  async enable(id: number): Promise<void> {
+    await query('update api_quotas set is_enabled = true where id = ?', [id]);
   },
 
   async delete(id: number): Promise<void> {
