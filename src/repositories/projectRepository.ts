@@ -4,16 +4,18 @@ import type { Project } from '../models/project';
 export const ProjectRepository = {
   async create(name: string): Promise<number> {
     const result = await query<Project>('insert into projects (name) values (?)', [name]);
-    // mysql2 returns result metadata differently via execute; lightweight cast:
-    // if using pool.execute directly you'd get ResultSetHeader. For query helper we return rows,
-    // so use another call to get last_insert_id if necessary. Keep minimal:
     const rows = await query<Project>('select id from projects where name = ? limit 1', [name]);
     return rows[0].id;
   },
 
-  async findById(id: number): Promise<Project | null> {
+  async findById(id: number): Promise<Project | undefined> {
     const rows = await query<Project>('select * from projects where id = ? limit 1', [id]);
-    return rows[0] ?? null;
+    return rows[0] ?? undefined;
+  },
+
+  async findByName(name: string): Promise<Project | undefined> {
+    const rows = await query<Project>('select * from projects where name = ? limit 1', [name]);
+    return rows[0] ?? undefined;
   },
 
   async list(): Promise<Project[]> {

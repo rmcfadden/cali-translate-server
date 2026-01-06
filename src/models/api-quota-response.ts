@@ -1,4 +1,4 @@
-import { ApiQuota } from "./api-quota";
+import { ApiQuotaCount } from "./api-quota-count";
 export type ApiQuotaResponse = {
-    quotas: ApiQuota[];
+    quotas: ApiQuotaCount[];
 }

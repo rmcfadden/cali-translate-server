@@ -1,5 +1,6 @@
 import { TranslateResponse } from "./translate-response";
+import { TranslateRequest } from "./translate-request";
 
 export default abstract class Translator {
-    abstract translate(text: string, to: string): Promise<TranslateResponse>;
+    abstract translate(request: TranslateRequest): Promise<TranslateResponse>;
 }

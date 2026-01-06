@@ -1,3 +1,4 @@
+import { TranslateRequest } from "../translate-request";
 import { TranslateResponse } from "../translate-response";
 import Translator from "../translator";
 import { OllamaTranslateResponse } from "./ollama-translate-response";
@@ -5,7 +6,8 @@ import {Ollama} from 'ollama';
 
 
 export default class OllamaTranslator extends Translator {
-    async translate(text: string, to: string): Promise<TranslateResponse> {
+    async translate(request: TranslateRequest): Promise<TranslateResponse> {
+        const  {text, to } = request;
         const ollama = new Ollama({ host: 'http://127.0.0.1:11434' });
         const message = `Translate: "${text}" to ${to}.`;
         console.log('translating:',message);
