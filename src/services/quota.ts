@@ -1,18 +1,28 @@
 import { ApiQuota } from "../models/api-quota";
 import { ApiQuotasRepository } from "../repositories/apiQuotasRepository";
 import { ApiQuotaResponse } from "../models/api-quota-response";
+import { ApiQuotaRequest } from "../models/api-quota-request";
 import { ApiKeyHitsRepository } from "../repositories/apiKeyHitsRepository";
-const check = async (api_key_id: number): Promise<ApiQuotaResponse> => {
+const check = async (request: ApiQuotaRequest): Promise<ApiQuotaResponse> => {
     const { findByApiKeyId } = ApiQuotasRepository;
+    const { apiKeyId: api_key_id, ipAddress } = request;
     const quotas: ApiQuota[] = await findByApiKeyId(api_key_id);
-    const { getCountByInterval } = ApiKeyHitsRepository;
+    const { getCountByInterval, getCountByIntervalIPAddress } =
+        ApiKeyHitsRepository;
     const counts = await Promise.all(
         quotas.map(async (quota) =>
-            getCountByInterval(
-                quota.api_key_id,
-                quota.interval_unit,
-                quota.val,
-            ),
+            quota.restrict_by_ip
+                ? getCountByIntervalIPAddress(
+                      quota.api_key_id,
+                      quota.interval_unit,
+                      quota.val,
+                      ipAddress,
+                  )
+                : getCountByInterval(
+                      quota.api_key_id,
+                      quota.interval_unit,
+                      quota.val,
+                  ),
         ),
     );
     const quotasWithCounts = quotas.map((quota, index) => ({

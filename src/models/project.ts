@@ -1,6 +1,7 @@
 export type Project = {
-  id: number;
-  name: string;
-  updated: Date;
-  created: Date;
+    id: number;
+    name: string;
+    is_public: boolean;
+    updated: Date;
+    created: Date;
 };

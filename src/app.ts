@@ -8,6 +8,7 @@ import authentication from "./services/authentication";
 import quota from "./services/quota";
 import type { Credential } from "./models/credential";
 import { ApiLogsRepository } from "./repositories/apiLogsRepository";
+import { ApiKeyHitsRepository } from "./repositories/apiKeyHitsRepository";
 import type { ApiQuotaCount } from "./models/api-quota-count";
 
 // Module augmentation for Express Request
@@ -16,6 +17,7 @@ declare module "express-serve-static-core" {
         user_id?: number | undefined;
         api_key_id?: number | undefined;
         quotas: ApiQuotaCount[];
+        remoteIp?: string | undefined;
     }
 }
 
@@ -37,27 +39,44 @@ app.use(async (req: Request, _: Response, next: NextFunction) => {
         throw Error("Authentication failed: cannot find api key");
     req.user_id = authenticateResponse?.user_id;
     req.api_key_id = authenticateResponse?.api_key_id;
+    req.remoteIp = (req.headers["x-forwarded-for"] ||
+        req.socket.remoteAddress) as string;
     next();
 });
 
-// Logs
+// ApkKeyHits
 app.use(async (req: Request, _: Response, next: NextFunction) => {
-    console.log("Logging request for api_key_id:", req.api_key_id);
-    const { create } = ApiLogsRepository;
-    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-    const api_log_id = await create(req.api_key_id as number, ip as string);
-    if (!api_log_id) throw Error("api_log_id cannot be empty");
+    const { create } = ApiKeyHitsRepository;
+    const api_key_hit_id = await create(
+        req.api_key_id as number,
+        req.remoteIp as string,
+    );
+    if (!api_key_hit_id) throw Error("api_key_hit_id cannot be empty");
     next();
 });
 
 // Quotas
 app.use(async (req: Request, _: Response, next: NextFunction) => {
-    const response = await quota.check(req.api_key_id as number);
+    const response = await quota.check({
+        apiKeyId: req.api_key_id as number,
+        ipAddress: req.remoteIp as string,
+    });
     req.quotas = response.quotas;
     next();
 });
 
 app.use("/", router);
+
+// Logs
+app.use(async (req: Request, _: Response, next: NextFunction) => {
+    const { create } = ApiLogsRepository;
+    const api_log_id = await create(
+        req.api_key_id as number,
+        req.remoteIp as string,
+    );
+    if (!api_log_id) throw Error("api_log_id cannot be empty");
+    next();
+});
 
 app.use((err: Error, _req: Request, res: Response) => {
     console.error(err.stack); // Log the error for debugging

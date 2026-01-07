@@ -11,7 +11,7 @@ const getDurationMilliseconds = (
     startTime: bigint,
     endTime: bigint,
 ): number => {
-    return Number(endTime - startTime) / 1000000; // Convert to milliseconds
+    return Number(endTime - startTime) / 1000000;
 };
 
 router.get("/api/translate", async (req: Request, res: Response) => {
@@ -57,7 +57,7 @@ router.get("/api/translate", async (req: Request, res: Response) => {
     }
 
     const response = await translator.translate(request);
-    console.log("response", response);
+    console.log("Response: ", response);
     if (cache && cacheKey) {
         console.log("cacheKey:", cacheKey);
         console.log("cache:", cache);
