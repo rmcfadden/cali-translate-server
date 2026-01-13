@@ -1,4 +1,4 @@
-import mysql from "mysql2/promise";
+import mysql, { ResultSetHeader } from "mysql2/promise";
 
 export const pool = mysql.createPool({
     host: process.env.DB_HOST || "127.0.0.1",
@@ -24,4 +24,13 @@ export async function query<T = any>(
 ): Promise<T[]> {
     const [rows] = await pool.execute<T[] & mysql.RowDataPacket[]>(sql, params);
     return rows as T[];
+}
+
+export async function insert<T = any>(
+    sql: string,
+    params: any[] = [],
+): Promise<number> {
+    const [result] = await pool.execute(sql, params);
+    const insertResult = result as ResultSetHeader;
+    return insertResult.insertId;
 }

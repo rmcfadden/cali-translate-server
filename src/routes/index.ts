@@ -39,12 +39,11 @@ router.get("/api/translate", async (req: Request, res: Response) => {
                   .update(JSON.stringify(request))
                   .digest("hex")
             : tempCacheKey;
-
     const translatorProvider = "ollama";
     const translator = TranslatorFactory.create(translatorProvider);
     if (!translator)
         throw new Error(`Translator ${translatorProvider} not found`);
-    const cache = CacheFactory.create("mysql");
+    const cache = CacheFactory.create("mysql", req.project?.id);
     if (cache && cacheKey) {
         const cachedTranslation = await cache.get(cacheKey);
         if (cachedTranslation) {
@@ -55,15 +54,11 @@ router.get("/api/translate", async (req: Request, res: Response) => {
             return;
         }
     }
-
     const response = await translator.translate(request);
     console.log("Response: ", response);
     if (cache && cacheKey) {
-        console.log("cacheKey:", cacheKey);
-        console.log("cache:", cache);
         await cache.set(cacheKey.toString(), JSON.stringify(response));
     }
-
     const endTime = process.hrtime.bigint();
     const duration = getDurationMilliseconds(startTime, endTime);
     res.send({ ...response, details: { duration, cacheKey } });

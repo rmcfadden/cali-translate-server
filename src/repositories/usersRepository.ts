@@ -1,19 +1,14 @@
-import { query } from "./db";
+import { query, insert } from "./db";
 import argon2 from "argon2";
 import type { User } from "../models/user";
 
 export const UsersRepository = {
     async create(username: string, password: string): Promise<number> {
         const hash = await argon2.hash(password);
-        await query(
+        return await insert(
             "insert into users (username, password_hash) values (?, ?)",
             [username, hash],
         );
-        const rows = await query<User>(
-            "select id from users where username = ? limit 1",
-            [username],
-        );
-        return rows[0].id;
     },
 
     async findById(id: number): Promise<User | undefined> {

@@ -7,9 +7,13 @@ import router from "./routes/index";
 import authentication from "./services/authentication";
 import quota from "./services/quota";
 import type { Credential } from "./models/credential";
+import type { ProjectsUser } from "./models/projects-user";
 import { ApiLogsRepository } from "./repositories/apiLogsRepository";
 import { ApiKeyHitsRepository } from "./repositories/apiKeyHitsRepository";
 import type { ApiQuotaCount } from "./models/api-quota-count";
+import { Project } from "./models/project";
+import { ProjectsRepository } from "./repositories/projectsRepository";
+import { ProjectsUsersRepository } from "./repositories/projectsUsersRepository";
 
 // Module augmentation for Express Request
 declare module "express-serve-static-core" {
@@ -18,6 +22,7 @@ declare module "express-serve-static-core" {
         api_key_id?: number | undefined;
         quotas: ApiQuotaCount[];
         remoteIp?: string | undefined;
+        project?: Project | undefined;
     }
 }
 
@@ -62,6 +67,30 @@ app.use(async (req: Request, _: Response, next: NextFunction) => {
         ipAddress: req.remoteIp as string,
     });
     req.quotas = response.quotas;
+    next();
+});
+
+// Project
+app.use(async (req: Request, _: Response, next: NextFunction) => {
+    const { query } = req;
+    const projectName = query.project as string | undefined;
+    const project = await ProjectsRepository.findByName(
+        projectName ?? "default",
+    );
+    const { findByProjectId } = ProjectsUsersRepository;
+    const projectsUsers =
+        project && !project.is_public
+            ? await findByProjectId(project.id)
+            : ([] as ProjectsUser[]);
+    const finalProject =
+        project &&
+        !project.is_public &&
+        projectsUsers.some((u) => u.user_id === req.user_id)
+            ? project
+            : project && project.is_public
+              ? project
+              : undefined;
+    req.project = finalProject;
     next();
 });
 

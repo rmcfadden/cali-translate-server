@@ -16,7 +16,7 @@ create table if not exists project_settings (
     value text not null,
     updated timestamp default current_timestamp on update current_timestamp,
     created timestamp default current_timestamp,
-    foreign key (project_id) references projects(id)
+    foreign key (project_id) references projects(id
  );
 
 create table if not exists users (
@@ -33,7 +33,9 @@ create table if not exists projects_users (
     id int auto_increment primary key,
     user_id int not null,
     project_id int not null, 
-    created timestamp default current_timestamp
+    created timestamp default current_timestamp,
+    foreign key (user_id) references users(id),
+    foreign key (project_id) references projects(id)
 );
 create unique index projects_users_user_id_project_id_unique_index ON projects_users (user_id, project_id);
 
