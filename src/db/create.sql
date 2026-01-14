@@ -16,7 +16,24 @@ create table if not exists project_settings (
     value text not null,
     updated timestamp default current_timestamp on update current_timestamp,
     created timestamp default current_timestamp,
-    foreign key (project_id) references projects(id
+    foreign key (project_id) references projects(id)
+ );
+
+create table if not exists services (
+    id int auto_increment primary key,
+    name varchar(256) not null unique,
+    updated timestamp default current_timestamp on update current_timestamp,
+    created timestamp default current_timestamp
+);
+
+create table if not exists service_settings (
+    id int auto_increment primary key,
+    service_id int not null,
+    name varchar(256) not null unique,
+    value text not null,
+    updated timestamp default current_timestamp on update current_timestamp,
+    created timestamp default current_timestamp,
+    foreign key (service_id) references services(id)
  );
 
 create table if not exists users (
@@ -61,8 +78,18 @@ create table if not exists api_key_hits (
 );
 create index api_key_hits_api_key_id_ip_address_index ON api_key_hits (api_key_id, ip_address);
 
+create table if not exists api_log_types  (
+    id int auto_increment primary key,
+    name varchar(128) not null unique,
+    created timestamp default current_timestamp
+);
+insert ignore into api_log_types (id, name) values
+    (1, 'Start'),
+    (2, 'Finish')
+
 create table if not exists api_logs (
     id int auto_increment primary key,
+    log_type_id int not null,
     api_key_id int not null,
     ip_address varbinary(16) not null,
     cache_key varchar(256) null,
@@ -70,6 +97,7 @@ create table if not exists api_logs (
     currency_code varchar(3) not null,
     is_success bit not null,
     created timestamp default current_timestamp,
+    foreign key (log_type_id) references api_log_types(id),
     foreign key (api_key_id) references api_keys(id)
 );
 create index api_logs_api_key_id_ip_address_index ON api_logs (api_key_id,ip_address);

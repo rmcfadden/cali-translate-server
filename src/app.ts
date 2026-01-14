@@ -8,12 +8,12 @@ import authentication from "./services/authentication";
 import quota from "./services/quota";
 import type { Credential } from "./models/credential";
 import type { ProjectsUser } from "./models/projects-user";
-import { ApiLogsRepository } from "./repositories/apiLogsRepository";
-import { ApiKeyHitsRepository } from "./repositories/apiKeyHitsRepository";
+import { ApiLogsRepository } from "./repositories/api-logs-repository";
+import { ApiKeyHitsRepository } from "./repositories/api-key-hits-repository";
 import type { ApiQuotaCount } from "./models/api-quota-count";
 import { Project } from "./models/project";
-import { ProjectsRepository } from "./repositories/projectsRepository";
-import { ProjectsUsersRepository } from "./repositories/projectsUsersRepository";
+import { ProjectsRepository } from "./repositories/projects-repository";
+import { ProjectsUsersRepository } from "./repositories/projects-users-repository";
 
 // Module augmentation for Express Request
 declare module "express-serve-static-core" {
@@ -95,17 +95,6 @@ app.use(async (req: Request, _: Response, next: NextFunction) => {
 });
 
 app.use("/", router);
-
-// Logs
-app.use(async (req: Request, _: Response, next: NextFunction) => {
-    const { create } = ApiLogsRepository;
-    const api_log_id = await create(
-        req.api_key_id as number,
-        req.remoteIp as string,
-    );
-    if (!api_log_id) throw Error("api_log_id cannot be empty");
-    next();
-});
 
 app.use((err: Error, _req: Request, res: Response) => {
     console.error(err.stack); // Log the error for debugging

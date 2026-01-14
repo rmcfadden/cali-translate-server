@@ -4,6 +4,7 @@ import TranslatorFactory from "../translators/translator-factory";
 import CacheFactory from "../caching/cache-factory";
 import { TranslateRequest } from "../translate-request";
 import { TranslateResponse } from "../translate-response";
+import { ApiLogsRepository } from "../repositories/api-logs-repository";
 
 const router = Router();
 
@@ -39,6 +40,11 @@ router.get("/api/translate", async (req: Request, res: Response) => {
                   .update(JSON.stringify(request))
                   .digest("hex")
             : tempCacheKey;
+
+    const { create } = ApiLogsRepository;
+    const startApiLogId = await create(req.api_key_id!, "Start", req.remoteIp!);
+    if (!startApiLogId) throw new Error("Failed to create start api log");
+
     const translatorProvider = "ollama";
     const translator = TranslatorFactory.create(translatorProvider);
     if (!translator)

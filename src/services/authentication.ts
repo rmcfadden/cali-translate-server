@@ -1,5 +1,5 @@
 import { Credential } from "../models/credential";
-import { ApiKeysRepository } from "../repositories/apiKeysRepository";
+import { ApiKeysRepository } from "../repositories/api-keys-repository";
 import { AuthenticationResponse } from "../models/authentication-response";
 
 async function authenticate(

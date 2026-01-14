@@ -7,7 +7,6 @@ export const CachesRepository = {
         name: string,
         value: string,
     ): Promise<void> {
-        // upsert style
         await query(
             `insert into caches (project_id, name, value) values (?, ?, ?)
        on duplicate key update value = values(value), updated = current_timestamp`,

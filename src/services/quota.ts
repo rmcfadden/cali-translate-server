@@ -1,8 +1,8 @@
 import { ApiQuota } from "../models/api-quota";
-import { ApiQuotasRepository } from "../repositories/apiQuotasRepository";
+import { ApiQuotasRepository } from "../repositories/api-quotas-repository";
 import { ApiQuotaResponse } from "../models/api-quota-response";
 import { ApiQuotaRequest } from "../models/api-quota-request";
-import { ApiKeyHitsRepository } from "../repositories/apiKeyHitsRepository";
+import { ApiKeyHitsRepository } from "../repositories/api-key-hits-repository";
 const check = async (request: ApiQuotaRequest): Promise<ApiQuotaResponse> => {
     const { findByApiKeyId } = ApiQuotasRepository;
     const { apiKeyId: api_key_id, ipAddress } = request;

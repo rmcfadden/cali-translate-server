@@ -1,5 +1,5 @@
 import ICache from "./icache";
-import { CachesRepository } from "../repositories/cachesRepository";
+import { CachesRepository } from "../repositories/caches-repository";
 
 export default class MysqlCache implements ICache {
     private projectId?: number | undefined;

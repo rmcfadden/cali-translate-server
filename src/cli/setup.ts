@@ -1,6 +1,6 @@
 import { Command } from "commander";
-import { UsersRepository } from "../repositories/usersRepository";
-import { ProjectsRepository } from "../repositories/projectsRepository";
+import { UsersRepository } from "../repositories/users-repository";
+import { ProjectsRepository } from "../repositories/projects-repository";
 
 const program = new Command();
 program.version("1.0.0").description("Setup");

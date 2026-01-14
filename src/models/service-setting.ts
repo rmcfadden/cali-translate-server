@@ -1,6 +1,6 @@
-export type ProjectSetting = {
+export type ServiceSetting = {
     id: number;
-    project_id: number;
+    service_id: number;
     name: string;
     value: string;
     updated: Date;

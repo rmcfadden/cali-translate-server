@@ -1,9 +1,9 @@
 import { Command } from "commander";
 import crypto from "crypto";
-import { UsersRepository } from "../repositories/usersRepository";
-import { ApiKeysRepository } from "../repositories/apiKeysRepository";
-import { ApiQuotasRepository } from "../repositories/apiQuotasRepository";
-import { ApiLogsRepository } from "../repositories/apiLogsRepository";
+import { UsersRepository } from "../repositories/users-repository";
+import { ApiKeysRepository } from "../repositories/api-keys-repository";
+import { ApiQuotasRepository } from "../repositories/api-quotas-repository";
+import { ApiLogsRepository } from "../repositories/api-logs-repository";
 import { ApiQuota } from "../models/api-quota";
 
 const program = new Command();
