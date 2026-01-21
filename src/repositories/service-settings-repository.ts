@@ -53,7 +53,7 @@ export const ServiceSettingsRepository = {
         name: string,
         value: string,
     ): Promise<void> {
-        const existing = await this.findByServiceAndKey(service_id, name);
+        const existing = await this.findByServiceAndName(service_id, name);
         if (existing) {
             await this.update(existing.id, value);
         } else {

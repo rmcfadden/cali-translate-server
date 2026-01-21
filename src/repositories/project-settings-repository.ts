@@ -53,7 +53,7 @@ export const ProjectSettingsRepository = {
         name: string,
         value: string,
     ): Promise<void> {
-        const existing = await this.findByProjectAndKey(project_id, name);
+        const existing = await this.findByProjectAndName(project_id, name);
         if (existing) {
             await this.update(existing.id, value);
         } else {

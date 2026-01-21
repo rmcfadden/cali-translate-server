@@ -7,7 +7,7 @@ program.version("1.0.0").description("Setup");
 
 program
     .command("create <password>")
-    .description("Create a new api key for username")
+    .description("Setup admin user and default project")
     .action(async (password: string) => {
         const { findByUsername, create: createAdmin } = UsersRepository;
         const adminUser = await findByUsername("admin");

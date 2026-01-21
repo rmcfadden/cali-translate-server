@@ -3,11 +3,17 @@ import { TranslateResponse } from "../translate-response";
 import Translator from "../translator";
 import { OllamaTranslateResponse } from "./ollama-translate-response";
 import { Ollama } from "ollama";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export default class OllamaTranslator extends Translator {
     async translate(request: TranslateRequest): Promise<TranslateResponse> {
         const { text, to } = request;
-        const ollama = new Ollama({ host: "http://127.0.0.1:11434" });
+        console.log("process.env.OLLAMA_URL:", process.env.OLLAMA_URL);
+        const host = process.env.OLLAMA_URL || "http://127.0.0.1:11434";
+        console.log("Using Ollama host:", host);
+        const ollama = new Ollama({ host });
         const message = `Translate: "${text}" to ${to}.`;
         console.log("translating:", message);
         const response = await ollama.chat({

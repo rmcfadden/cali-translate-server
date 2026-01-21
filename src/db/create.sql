@@ -85,8 +85,8 @@ create table if not exists api_log_types  (
 );
 insert ignore into api_log_types (id, name) values
     (1, 'Start'),
-    (2, 'Finish')
-
+    (2, 'Finish');
+    
 create table if not exists api_logs (
     id int auto_increment primary key,
     log_type_id int not null,

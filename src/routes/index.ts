@@ -49,6 +49,7 @@ router.get("/api/translate", async (req: Request, res: Response) => {
     const translator = TranslatorFactory.create(translatorProvider);
     if (!translator)
         throw new Error(`Translator ${translatorProvider} not found`);
+
     const cache = CacheFactory.create("mysql", req.project?.id);
     if (cache && cacheKey) {
         const cachedTranslation = await cache.get(cacheKey);
@@ -56,8 +57,13 @@ router.get("/api/translate", async (req: Request, res: Response) => {
             const endTime = process.hrtime.bigint();
             const duration = getDurationMilliseconds(startTime, endTime);
             const response = JSON.parse(cachedTranslation) as TranslateResponse;
-            res.send({ ...response, details: { duration, cacheKey } });
-            return;
+            const endApiLogId = await create(
+                req.api_key_id!,
+                "Finish",
+                req.remoteIp!,
+            );
+            if (!endApiLogId) throw new Error("Failed to create end api log");
+            return res.send({ ...response, details: { duration, cacheKey } });
         }
     }
     const response = await translator.translate(request);
@@ -67,7 +73,9 @@ router.get("/api/translate", async (req: Request, res: Response) => {
     }
     const endTime = process.hrtime.bigint();
     const duration = getDurationMilliseconds(startTime, endTime);
-    res.send({ ...response, details: { duration, cacheKey } });
+    const endApiLogId = await create(req.api_key_id!, "Finish", req.remoteIp!);
+    if (!endApiLogId) throw new Error("Failed to create end api log");
+    return res.send({ ...response, details: { duration, cacheKey } });
 });
 
 export default router;

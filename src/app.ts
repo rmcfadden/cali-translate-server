@@ -8,7 +8,6 @@ import authentication from "./services/authentication";
 import quota from "./services/quota";
 import type { Credential } from "./models/credential";
 import type { ProjectsUser } from "./models/projects-user";
-import { ApiLogsRepository } from "./repositories/api-logs-repository";
 import { ApiKeyHitsRepository } from "./repositories/api-key-hits-repository";
 import type { ApiQuotaCount } from "./models/api-quota-count";
 import { Project } from "./models/project";
@@ -30,23 +29,29 @@ dotenv.config();
 
 const app: Application = express();
 
+app.get("/favicon.ico", (_, res) => res.status(204));
+
 // Authentication
 app.use(async (req: Request, _: Response, next: NextFunction) => {
-    const token =
-        req.headers["x-api-key"]?.toString() ??
-        req.query["x-api-key"]?.toString() ??
-        "";
-    const authenticateResponse = await authentication.authenticate({
-        type: "api-key",
-        token,
-    } as Credential);
-    if (!authenticateResponse)
-        throw Error("Authentication failed: cannot find api key");
-    req.user_id = authenticateResponse?.user_id;
-    req.api_key_id = authenticateResponse?.api_key_id;
-    req.remoteIp = (req.headers["x-forwarded-for"] ||
-        req.socket.remoteAddress) as string;
-    next();
+    try {
+        const token =
+            req.headers["x-api-key"]?.toString() ??
+            req.query["x-api-key"]?.toString() ??
+            "";
+        const authenticateResponse = await authentication.authenticate({
+            type: "api-key",
+            token,
+        } as Credential);
+        if (!authenticateResponse)
+            throw Error("Authentication failed: cannot find api key");
+        req.user_id = authenticateResponse?.user_id;
+        req.api_key_id = authenticateResponse?.api_key_id;
+        req.remoteIp = (req.headers["x-forwarded-for"] ||
+            req.socket.remoteAddress) as string;
+        next();
+    } catch (error) {
+        next(error);
+    }
 });
 
 // ApkKeyHits
@@ -96,8 +101,8 @@ app.use(async (req: Request, _: Response, next: NextFunction) => {
 
 app.use("/", router);
 
-app.use((err: Error, _req: Request, res: Response) => {
-    console.error(err.stack); // Log the error for debugging
+app.use((err: Error, _req: Request, res: Response, _: NextFunction) => {
+    console.error("Middleware error:", err.stack); // Log the error for debugging
     res.status(500).send(err.message); // Send a generic error response
 });
 
@@ -107,6 +112,7 @@ app.set("port", port);
 const server = http.createServer(app);
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+    console.log("Process environment:", process.env.DB_PORT);
 });
 
 export default app;
