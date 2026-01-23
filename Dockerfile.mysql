@@ -2,7 +2,7 @@ FROM mysql:latest
 
 # Set environment variables for MySQL root password and database name
 ENV MYSQL_ROOT_PASSWORD=rootpassword
-ENV MYSQL_DATABASE=translate
+ENV MYSQL_DATABASE=services
 ENV MYSQL_USER=appuser
 ENV MYSQL_PASSWORD=apppassword
 

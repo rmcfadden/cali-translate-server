@@ -1,5 +1,5 @@
-create database if not exists translate;
-use translate;
+create database if not exists services;
+use services;
 
 create table if not exists projects (
     id int auto_increment primary key,
@@ -86,7 +86,7 @@ create table if not exists api_log_types  (
 insert ignore into api_log_types (id, name) values
     (1, 'Start'),
     (2, 'Finish');
-    
+
 create table if not exists api_logs (
     id int auto_increment primary key,
     log_type_id int not null,
