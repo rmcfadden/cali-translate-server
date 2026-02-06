@@ -1,6 +1,6 @@
-import router from '../routes/index';
+import _router from '../routes/index';
 
-describe('index', () => {  
+describe('index', () => {
     test('dummy test', () => {
         //app
         //expect(greet).toBe("Hello, World!");

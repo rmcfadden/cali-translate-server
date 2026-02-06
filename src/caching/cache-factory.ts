@@ -1,4 +1,3 @@
-import { n } from "ollama/dist/shared/ollama.415fa141";
 import ICache from "./icache";
 import MemoryCache from "./memory-cache";
 import MysqlCache from "./mysql-cache";

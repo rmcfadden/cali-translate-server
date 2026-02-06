@@ -2,34 +2,28 @@ import { query, insert } from "./db";
 import type { Service } from "../models/service";
 
 export const ServicesRepository = {
-    async create(name: string): Promise<number> {
-        const result = await insert("insert into services (name) values (?)", [
-            name,
-        ]);
-        return result;
-    },
+    create: async (name: string): Promise<number> =>
+        insert("insert into services (name) values (?)", [name]),
 
-    async findById(id: number): Promise<Service | undefined> {
-        const rows = await query<Service>(
-            "select * from services where id = ? limit 1",
-            [id],
-        );
-        return rows[0] ?? undefined;
-    },
+    findById: async (id: number): Promise<Service | undefined> =>
+        (
+            await query<Service>(
+                "select * from services where id = ? limit 1",
+                [id],
+            )
+        )[0] ?? undefined,
 
-    async findByName(name: string): Promise<Service | undefined> {
-        const rows = await query<Service>(
-            "select * from services where name = ? limit 1",
-            [name],
-        );
-        return rows[0] ?? undefined;
-    },
+    findByName: async (name: string): Promise<Service | undefined> =>
+        (
+            await query<Service>(
+                "select * from services where name = ? limit 1",
+                [name],
+            )
+        )[0] ?? undefined,
 
-    async list(): Promise<Service[]> {
-        return query<Service>("select * from services order by id", []);
-    },
+    list: async (): Promise<Service[]> =>
+        query<Service>("select * from services order by id", []),
 
-    async delete(id: number): Promise<void> {
-        await query("delete from services where id = ?", [id]);
-    },
+    delete: async (id: number): Promise<void> =>
+        void (await query("delete from services where id = ?", [id])),
 };

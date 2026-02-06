@@ -9,9 +9,9 @@ program
 program
   .command('translate <username>')
   .description('Create a new api key for username')
-  .action(async (to: string, text: string) => {
+  .action(async (username: string) => {
     const response = await app.get('/api/translate')
-    console.log('Translation response:', response);
+    console.log('Translation response:', response, username);
   });
 
 program.parse(process.argv);

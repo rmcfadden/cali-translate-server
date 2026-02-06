@@ -25,9 +25,23 @@ docker run -p 3306:3306 my-mysql
 ```
 
 3. Test Url:
-   http://localhost:3000/api/translate?q=testing&to=spanish&x-api-key=YmM4OGU4YmEwOTQ5MDQ5MDg3N2U1ZjM3ZWFmMmZiYTk3OThhOWMwYTU5NmVkOWFiMzM0OTMyOTQ2NGU2ZTU5NzoyMTkwYTdmYzQxZGQ5OWJhYWZmYzA0YWUwMjBkODZkNWViOTI2MmZlMmQyZTBjOGQxNDQwNTZkNjNmZjZiZjky
+   http://localhost:3000/api/translate?q=testing&to=spanish&x-api-key=YWE2ODdjMWRlYTI0Y2VmMGZiOWRkMDYxMjA0NjA2YzVmODgyMjdkNTAyMjdlZWQ3MGQ1MWQyYjAzY2Y4OThhNDo3NzRmZjM3OTIzNzBhYTU1OWUwMTJkNmFiYWMwMzIzNTQxMmQzM2E3MmVhOWVkZDdjMmIwYmI0NTY2NDQ3NmY0
 
 4. Docker compose
 
-DB_HOST=mysql OLLAMA_URL=http://ollama:11434  
-docker compose --profile database --profile ai --profile web up
+DB_HOST=mysql OLLAMA_URL=http://ollama:11434 docker compose --profile database --profile ai --profile web up
+
+docker compose --profile database --profile ai --profile web down
+
+5. Docker exec commands:
+
+- docker exec node_app_container ls
+
+- docker exec -it mysql_container mysql -u appuser -papppassword -D services -e "SHOW TABLES;"
+
+- docker exec node_app_container node ./dist/cli/setup create PasswordReplace
+
+- docker exec node_app_container node ./dist/cli/api-keys add admin
+
+- docker exec ollama_container ollama pull wizardlm2
+- docker exec ollama_container ollama list
